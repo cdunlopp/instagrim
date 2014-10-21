@@ -18,6 +18,8 @@
         <header>
             <h1>InstaGrim ! </h1>
             <h2>Your world in Black and White</h2>
+            
+            
         </header>
         <nav>
             <ul>
@@ -33,6 +35,11 @@
                     %>
 
                 <li><a href="/Instagrim/Images/<%=lg.getUsername()%>">Your Images</a></li>
+                <li><a href="/Instagrim/MyProfile/<%=lg.getUsername()%>">My Profile</a></li>
+                
+                <form method="POST"  action="LogOut">               
+                <input type="submit" value="LogOut"> 
+                        </form>
                     <%}
                             }else{
                                 %>

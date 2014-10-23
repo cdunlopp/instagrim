@@ -21,8 +21,8 @@
                 LoggedIn lg = (LoggedIn) session.getAttribute("LoggedIn");                               
             %>
                 
-        <h1>InstaGrim ! <%=lg.getUsername()%> </h1>
-        <h2>Your world in Black and White</h2>
+        <h1>InstaGrim !  </h1>
+        <h2><%=lg.getUsername()%>'s world in Black and White</h2>
         </header>
         
         <nav>

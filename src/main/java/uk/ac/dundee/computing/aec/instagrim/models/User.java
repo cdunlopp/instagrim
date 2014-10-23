@@ -27,7 +27,7 @@ public class User {
         
     }
     
-    public boolean RegisterUser(String username, String Password){
+    public boolean RegisterUser(String username, String Password, String fname, String sname){
         AeSimpleSHA1 sha1handler=  new AeSimpleSHA1();
         String EncodedPassword=null;
         try {
@@ -37,12 +37,12 @@ public class User {
             return false;
         }
         Session session = cluster.connect("instagrim");
-        PreparedStatement ps = session.prepare("insert into userprofiles (login,password) Values(?,?)");
+        PreparedStatement ps = session.prepare("insert into userprofiles (login,password,first_name,last_name) Values(?,?,?,?)");
        
         BoundStatement boundStatement = new BoundStatement(ps);
         session.execute( // this is where the query is executed
                 boundStatement.bind( // here you are binding the 'boundStatement'
-                        username,EncodedPassword));
+                        username,EncodedPassword,fname,sname));
         //We are assuming this always works.  Also a transaction would be good here !
         
         return true;
@@ -99,8 +99,28 @@ public class User {
         }
         return profile;
     }
-    
-    
+        
+        public java.util.LinkedList<String> getUserInfo(String User) {
+        java.util.LinkedList<String> profile = new java.util.LinkedList<>();
+        Session session = cluster.connect("instagrim");
+        PreparedStatement ps = session.prepare("select * from userprofiles where login =?");
+        ResultSet rs = null;
+        BoundStatement boundStatement = new BoundStatement(ps);
+        rs = session.execute( // this is where the query is executed
+                boundStatement.bind( // here you are binding the 'boundStatement'
+                        User));
+        if (rs.isExhausted()) {
+            System.out.println("No Information returned");
+            return null;
+        } else {
+            for (Row row : rs) {
+                String userName = row.getString("login");
+                profile.push(userName);                
+            }
+        }
+        return profile;
+    }
+      
     
     
        public void setCluster(Cluster cluster) {

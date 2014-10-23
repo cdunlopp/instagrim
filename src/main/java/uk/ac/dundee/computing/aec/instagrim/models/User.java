@@ -74,11 +74,35 @@ public class User {
                 if (StoredPass.compareTo(EncodedPassword) == 0)
                     return true;
             }
-        }
-   
+        }  
     
     return false;  
     }
+    
+        public java.util.LinkedList<String> getUserProfile(String User) {
+        java.util.LinkedList<String> profile = new java.util.LinkedList<>();
+        Session session = cluster.connect("instagrim");
+        PreparedStatement ps = session.prepare("select * from userprofiles where login =?");
+        ResultSet rs = null;
+        BoundStatement boundStatement = new BoundStatement(ps);
+        rs = session.execute( // this is where the query is executed
+                boundStatement.bind( // here you are binding the 'boundStatement'
+                        User));
+        if (rs.isExhausted()) {
+            System.out.println("No Information returned");
+            return null;
+        } else {
+            for (Row row : rs) {
+                String userName = row.getString("login");
+                profile.push(userName);
+            }
+        }
+        return profile;
+    }
+    
+    
+    
+    
        public void setCluster(Cluster cluster) {
         this.cluster = cluster;
     }

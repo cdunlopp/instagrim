@@ -22,7 +22,7 @@
             %>
                 
         <h1>InstaGrim !  </h1>
-        <h2><%=lg.getUsername()%>'s world in Black and White</h2>
+        <h2><%=lg.getFirstName()%>'s world in Black and White</h2>
         </header>
         
         <nav>

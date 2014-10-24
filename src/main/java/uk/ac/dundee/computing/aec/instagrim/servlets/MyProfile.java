@@ -21,10 +21,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import uk.ac.dundee.computing.aec.instagrim.lib.Convertors;
 import uk.ac.dundee.computing.aec.instagrim.models.PicModel;
 import uk.ac.dundee.computing.aec.instagrim.models.User;
 import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
+import uk.ac.dundee.computing.aec.instagrim.stores.LoggedIn;
 import uk.ac.dundee.computing.aec.instagrim.lib.CassandraHosts;
 
 
@@ -111,7 +113,13 @@ HashMap CommandsMap = new HashMap();
         tm.setCluster(cluster);
         
         java.util.LinkedList<String> up = tm.getUserProfile(User);
+        String fname = tm.getFirstName(User);
+        
+        HttpSession session=request.getSession();
+        LoggedIn lg = (LoggedIn) session.getAttribute("LoggedIn");;
+        lg.setFirstName(fname);
         RequestDispatcher rd = request.getRequestDispatcher("/MyProfile.jsp");
+        
         request.setAttribute("upinfo", up);
         rd.forward(request, response);
 

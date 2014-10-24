@@ -100,10 +100,11 @@ public class User {
         return profile;
     }
         
-        public java.util.LinkedList<String> getUserInfo(String User) {
-        java.util.LinkedList<String> profile = new java.util.LinkedList<>();
+        public String getFirstName(String User) {
+        String fname = null;
         Session session = cluster.connect("instagrim");
-        PreparedStatement ps = session.prepare("select * from userprofiles where login =?");
+        
+        PreparedStatement ps = session.prepare("select first_name from userprofiles where login =?");
         ResultSet rs = null;
         BoundStatement boundStatement = new BoundStatement(ps);
         rs = session.execute( // this is where the query is executed
@@ -114,11 +115,11 @@ public class User {
             return null;
         } else {
             for (Row row : rs) {
-                String userName = row.getString("login");
-                profile.push(userName);                
+                fname = row.getString("first_name");
+                                
             }
         }
-        return profile;
+        return fname;
     }
       
     

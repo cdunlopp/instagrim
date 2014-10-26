@@ -14,6 +14,9 @@ public class LoggedIn {
     boolean logedin=false;
     String Username=null;
     String fname=null;
+    String bio=null;
+    java.util.UUID pPicID = null;
+    
     public void LogedIn(){
         
     }
@@ -23,6 +26,20 @@ public class LoggedIn {
     }
     public String getUsername(){
         return Username;
+    }
+    
+    public void setBio(String bio){
+        this.bio=bio;
+    }
+    public String getBio(){
+        return bio;
+    }
+    
+    public void setpPicID(java.util.UUID newpPicID){
+        this.pPicID = newpPicID;
+    }
+    public java.util.UUID getpPicID(){
+        return pPicID;
     }
     
     public void setFirstName(String name){

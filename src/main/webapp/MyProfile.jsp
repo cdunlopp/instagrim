@@ -23,6 +23,12 @@
                 
         <h1>InstaGrim !  </h1>
         <h2><%=lg.getFirstName()%>'s world in Black and White</h2>
+        
+        
+        <a href="/Instagrim/Image/<%=lg.getpPicID()%>" ><img src="/Instagrim/Thumb/<%=lg.getpPicID()%>"></a><br/>
+        
+        
+        <h3>Bio: <%=lg.getBio()%></h3>
         </header>
         
         <nav>
@@ -39,7 +45,10 @@
         </nav>
         <footer>
             <ul>
+                <li class="footer"><a href="/Instagrim/EditBio.jsp">Edit Bio</a></li>
+                <li class="footer"><a href="/Instagrim/EditPF.jsp">Edit Profile Photo</a></li>
                 <li class="footer"><a href="/Instagrim">Home</a></li>
+                
             </ul>
         </footer>
     </body>

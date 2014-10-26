@@ -48,6 +48,20 @@ public class User {
         return true;
     }
     
+    public boolean SetBio(String bio, String user){
+        AeSimpleSHA1 sha1handler=  new AeSimpleSHA1();
+        Session session = cluster.connect("instagrim");
+        PreparedStatement ps = session.prepare("update userprofiles set bio =? where login =?");
+       
+        BoundStatement boundStatement = new BoundStatement(ps);
+        session.execute( // this is where the query is executed
+                boundStatement.bind( // here you are binding the 'boundStatement'
+                        bio,user));
+        //We are assuming this always works.  Also a transaction would be good here !
+        
+        return true;
+    }
+    
     public boolean IsValidUser(String username, String Password){
         AeSimpleSHA1 sha1handler=  new AeSimpleSHA1();
         String EncodedPassword=null;
@@ -121,7 +135,49 @@ public class User {
         }
         return fname;
     }
-      
+        
+        public String getBio(String user) {
+        String bio = null;
+        Session session = cluster.connect("instagrim");
+        
+        PreparedStatement ps = session.prepare("select bio from userprofiles where login =?");
+        ResultSet rs = null;
+        BoundStatement boundStatement = new BoundStatement(ps);
+        rs = session.execute( // this is where the query is executed
+                boundStatement.bind( // here you are binding the 'boundStatement'
+                        user));
+        if (rs.isExhausted()) {
+            System.out.println("No Information returned");
+            return null;
+        } else {
+            for (Row row : rs) {
+                bio = row.getString("bio");
+                                
+            }
+        }
+        return bio;
+    }
+        public java.util.UUID getPic(String user) {
+        java.util.UUID pPicID = null;
+        Session session = cluster.connect("instagrim");
+        
+        PreparedStatement ps = session.prepare("select pPicID from userprofiles where login =?");
+        ResultSet rs = null;
+        BoundStatement boundStatement = new BoundStatement(ps);
+        rs = session.execute( // this is where the query is executed
+                boundStatement.bind( // here you are binding the 'boundStatement'
+                        user));
+        if (rs.isExhausted()) {
+            System.out.println("No Information returned");
+            return null;
+        } else {
+            for (Row row : rs) {
+                pPicID = row.getUUID("pPicID");                                
+            }
+        }
+        return pPicID;
+        
+     }
     
     
        public void setCluster(Cluster cluster) {

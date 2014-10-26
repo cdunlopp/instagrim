@@ -50,7 +50,7 @@ public class PicModel {
         this.cluster = cluster;
     }
 
-    public void insertPic(byte[] b, String type, String name, String user) {
+    public void insertPic(boolean profilePic, byte[] b, String type, String name, String user) {
         try {
             Convertors convertor = new Convertors();
 
@@ -72,6 +72,12 @@ public class PicModel {
             int processedlength=processedb.length;
             Session session = cluster.connect("instagrim");
 
+            if(profilePic == true)
+            {
+                PreparedStatement psProfilePic = session.prepare("update userprofiles set pPicID =? where login =?");
+                BoundStatement bsProfilePic = new BoundStatement(psProfilePic);
+                session.execute(bsProfilePic.bind(picid, user));                
+            }
             PreparedStatement psInsertPic = session.prepare("insert into pics ( picid, image,thumb,processed, user, interaction_time,imagelength,thumblength,processedlength,type,name) values(?,?,?,?,?,?,?,?,?,?,?)");
             PreparedStatement psInsertPicToUser = session.prepare("insert into userpiclist ( picid, user, pic_added) values(?,?,?)");
             BoundStatement bsInsertPic = new BoundStatement(psInsertPic);

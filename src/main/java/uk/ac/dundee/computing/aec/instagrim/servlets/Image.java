@@ -36,7 +36,7 @@ import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
     "/Image/*",
     "/Thumb/*",
     "/Images",
-    "/Images/*"
+    "/Images/*",
 })
 @MultipartConfig
 
@@ -45,7 +45,6 @@ public class Image extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private Cluster cluster;
     private HashMap CommandsMap = new HashMap();
-    
     
 
     /**
@@ -128,9 +127,10 @@ public class Image extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         for (Part part : request.getParts()) {
             System.out.println("Part Name " + part.getName());
-
+            
             String type = part.getContentType();
             String filename = part.getSubmittedFileName();
+            RequestDispatcher rd = null;
             
             InputStream is = request.getPart(part.getName()).getInputStream();
             int i = is.available();
@@ -145,14 +145,24 @@ public class Image extends HttpServlet {
                 is.read(b);
                 System.out.println("Length : " + b.length);
                 PicModel tm = new PicModel();
-                tm.setCluster(cluster);
-                tm.insertPic(b, type, filename, username);
-
+                tm.setCluster(cluster);              
+                String source = request.getParameter("source");
+                
+                if(source.equals("Profile")){
+                tm.insertPic(true, b, type, filename, username);
                 is.close();
-            }
-            RequestDispatcher rd = request.getRequestDispatcher("/upload.jsp");
+                rd = request.getRequestDispatcher("/Instagrim");
+                
+                }else{
+                tm.insertPic(false, b, type, filename, username);
+                is.close();
+                rd = request.getRequestDispatcher("/upload.jsp");
+                }
+               
+            }                   
              rd.forward(request, response);
-        }
+             
+    }
 
     }
 

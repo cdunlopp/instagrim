@@ -5,59 +5,26 @@
  */
 package uk.ac.dundee.computing.aec.instagrim.servlets;
 
-import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.PreparedStatement;
-import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
 import java.io.IOException;
 import java.io.PrintWriter;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import uk.ac.dundee.computing.aec.instagrim.lib.Convertors;
-import uk.ac.dundee.computing.aec.instagrim.models.PicModel;
-import uk.ac.dundee.computing.aec.instagrim.models.User;
-import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
-import uk.ac.dundee.computing.aec.instagrim.stores.LoggedIn;
 import uk.ac.dundee.computing.aec.instagrim.lib.CassandraHosts;
-
+import uk.ac.dundee.computing.aec.instagrim.models.User;
+import uk.ac.dundee.computing.aec.instagrim.stores.LoggedIn;
 
 /**
  *
  * @author Christopher
  */
+@WebServlet(name = "EditBio", urlPatterns = {"/EditBio"})
+public class EditBio extends HttpServlet {
 
-@WebServlet(urlPatterns = {
-    "/MyProfile",
-    "/MyProfile/*",
-})
-
-public class MyProfile extends HttpServlet {
-Cluster cluster;
-HashMap CommandsMap = new HashMap();
-    
-    
-    
-    public MyProfile()
-    {
-        super();
-        CommandsMap.put ("Profile/*",1);
-  }
-    
- @Override  
- public void init(ServletConfig config) throws ServletException 
-    {
-        // TODO Auto-generated method stub
-        cluster = CassandraHosts.getCluster();
-    }
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -69,9 +36,8 @@ HashMap CommandsMap = new HashMap();
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        }
-    
+        
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -86,10 +52,6 @@ HashMap CommandsMap = new HashMap();
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-        
-        String args[] = Convertors.SplitRequestPath(request);
-        String user = args[2];
-       DisplayUserProfile(user, request, response);
     }
 
     /**
@@ -105,31 +67,18 @@ HashMap CommandsMap = new HashMap();
             throws ServletException, IOException {
         processRequest(request, response);
         
-        
-                  
-    }
-        private void DisplayUserProfile(String User, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        User tm = new User();
-        tm.setCluster(cluster);
-        
-        java.util.LinkedList<String> up = tm.getUserProfile(User);
-        String fname = tm.getFirstName(User);
-        String bio = tm.getBio(User);
-        java.util.UUID pPicID = tm.getPic(User);
-        
+        processRequest(request, response);
+        String bio=request.getParameter("bio");
+        Cluster cluster = CassandraHosts.getCluster();
+        User us= new User();
+        us.setCluster(cluster);
         HttpSession session=request.getSession();
         LoggedIn lg = (LoggedIn) session.getAttribute("LoggedIn");
-        lg.setFirstName(fname);
-        lg.setBio(bio);
-        lg.setpPicID(pPicID);
-        RequestDispatcher rd = request.getRequestDispatcher("/MyProfile.jsp");
+        String user = lg.getUsername();
+        us.SetBio(bio,user);
         
-        request.setAttribute("upinfo", up);
-        rd.forward(request, response);
-
+        response.sendRedirect("/Instagrim/MyProfile/"+lg.getUsername());
     }
-    
-    
 
     /**
      * Returns a short description of the servlet.

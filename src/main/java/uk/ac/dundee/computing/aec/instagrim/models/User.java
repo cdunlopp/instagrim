@@ -16,6 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import uk.ac.dundee.computing.aec.instagrim.lib.AeSimpleSHA1;
 import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
+import uk.ac.dundee.computing.aec.instagrim.stores.FoundList;
 
 /**
  *
@@ -93,7 +94,7 @@ public class User {
     return false;  
     }
     
-        public java.util.LinkedList<String> getUserProfile(String User) {
+    public java.util.LinkedList<String> getUserProfile(String User) {
         java.util.LinkedList<String> profile = new java.util.LinkedList<>();
         Session session = cluster.connect("instagrim");
         PreparedStatement ps = session.prepare("select * from userprofiles where login =?");
@@ -114,7 +115,7 @@ public class User {
         return profile;
     }
         
-        public String getFirstName(String User) {
+    public String getFirstName(String User) {
         String fname = null;
         Session session = cluster.connect("instagrim");
         
@@ -136,7 +137,7 @@ public class User {
         return fname;
     }
         
-        public String getBio(String user) {
+    public String getBio(String user) {
         String bio = null;
         Session session = cluster.connect("instagrim");
         
@@ -157,7 +158,8 @@ public class User {
         }
         return bio;
     }
-        public java.util.UUID getPic(String user) {
+    
+    public java.util.UUID getPic(String user) {
         java.util.UUID pPicID = null;
         Session session = cluster.connect("instagrim");
         
@@ -178,9 +180,39 @@ public class User {
         return pPicID;
         
      }
+
     
+    public java.util.LinkedList<FoundList> search(String name)
+    {
+        java.util.LinkedList<FoundList> search = new java.util.LinkedList<>();
+        Session session = cluster.connect("instagrim");
+        
+        PreparedStatement ps = session.prepare("select login,first_name,last_name,pPicID from userprofiles where last_name =?");
+        ResultSet rs = null;
+        BoundStatement boundStatement = new BoundStatement(ps);
+        rs = session.execute( // this is where the query is executed
+                boundStatement.bind( // here you are binding the 'boundStatement'
+                        name));
+        if (rs.isExhausted()) {
+            System.out.println("No Information returned");
+            return null;
+        } else {
+            for (Row row : rs) {
+                
+                FoundList foundItem = new FoundList();
+                
+                foundItem.login = row.getString("login");
+                foundItem.fname = row.getString("first_name");
+                foundItem.sname = row.getString("last_name");
+                foundItem.picID = row.getUUID("pPicID");
+                
+                search.push(foundItem);                
+            }
+        }
+        return search;       
+    }
     
-       public void setCluster(Cluster cluster) {
+    public void setCluster(Cluster cluster) {
         this.cluster = cluster;
     }
 

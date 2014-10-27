@@ -1,64 +1,31 @@
+package uk.ac.dundee.computing.aec.instagrim.servlets;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package uk.ac.dundee.computing.aec.instagrim.servlets;
-
-import com.datastax.driver.core.BoundStatement;
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.PreparedStatement;
-import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
+import uk.ac.dundee.computing.aec.instagrim.stores.FoundList;
 import java.io.IOException;
 import java.io.PrintWriter;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import uk.ac.dundee.computing.aec.instagrim.lib.Convertors;
-import uk.ac.dundee.computing.aec.instagrim.models.PicModel;
-import uk.ac.dundee.computing.aec.instagrim.models.User;
-import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
-import uk.ac.dundee.computing.aec.instagrim.stores.LoggedIn;
-import uk.ac.dundee.computing.aec.instagrim.stores.CurrentPage;
 import uk.ac.dundee.computing.aec.instagrim.lib.CassandraHosts;
-
+import uk.ac.dundee.computing.aec.instagrim.models.User;
+import uk.ac.dundee.computing.aec.instagrim.stores.LoggedIn;
+import com.datastax.driver.core.Cluster;
+import javax.servlet.RequestDispatcher;
 
 /**
  *
  * @author Christopher
  */
+@WebServlet(urlPatterns = {"/Search"})
+public class Search extends HttpServlet {
 
-@WebServlet(urlPatterns = {
-    "/MyProfile",
-    "/MyProfile/*",
-})
-
-public class MyProfile extends HttpServlet {
-Cluster cluster;
-HashMap CommandsMap = new HashMap();
-    
-    
-    
-    public MyProfile()
-    {
-        super();
-        CommandsMap.put ("Profile/*",1);
-  }
-    
- @Override  
- public void init(ServletConfig config) throws ServletException 
-    {
-        // TODO Auto-generated method stub
-        cluster = CassandraHosts.getCluster();
-    }
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -70,9 +37,7 @@ HashMap CommandsMap = new HashMap();
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        }
-    
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -87,10 +52,6 @@ HashMap CommandsMap = new HashMap();
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-        
-        String args[] = Convertors.SplitRequestPath(request);
-        String user = args[2];
-       DisplayUserProfile(user, request, response);
     }
 
     /**
@@ -104,35 +65,17 @@ HashMap CommandsMap = new HashMap();
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
         
+        String sname = request.getParameter("name");
+        User us = new User();
+        us.setCluster(CassandraHosts.getCluster());        
+        java.util.LinkedList<FoundList> results = us.search(sname);
+        RequestDispatcher rd = request.getRequestDispatcher("/SearchResults.jsp");
+        request.setAttribute("results", results);
+         
         
-                  
-    }
-        private void DisplayUserProfile(String User, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        User tm = new User();
-        tm.setCluster(cluster);
-        
-        java.util.LinkedList<String> up = tm.getUserProfile(User);
-        String fname = tm.getFirstName(User);
-        String bio = tm.getBio(User);
-        java.util.UUID pPicID = tm.getPic(User);
-        
-        HttpSession session=request.getSession();
-        CurrentPage cp = new CurrentPage();
-        cp.setUsername(User);
-        cp.setFirstName(fname);
-        cp.setBio(bio);
-        cp.setpPicID(pPicID);
-        session.setAttribute("CurrentPage", cp);
-        RequestDispatcher rd = request.getRequestDispatcher("/MyProfile.jsp");
-        
-        request.setAttribute("upinfo", up);
         rd.forward(request, response);
-
     }
-    
-    
 
     /**
      * Returns a short description of the servlet.

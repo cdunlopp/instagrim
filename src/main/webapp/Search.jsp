@@ -1,10 +1,9 @@
 <%-- 
-    Document   : EditPF
-    Created on : 25-Oct-2014, 16:42:50
+    Document   : Search
+    Created on : 26-Oct-2014, 22:14:39
     Author     : Christopher
 --%>
 
-<%@page import="java.util.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="uk.ac.dundee.computing.aec.instagrim.stores.*" %>
 <!DOCTYPE html>
@@ -18,16 +17,10 @@
         <header>
                                    
         <h1>InstaGrim !  </h1>
-            
-        
         <h3>
-            <form method="POST" enctype="multipart/form-data" action="Image" >
-                
-                File to upload: <input type="file" name="upfile">
-                <input type="hidden" name="source" value="Profile"/>
-                <br/>
-                <br/>
-                <input type="submit" value="Press"> to upload the file!
+            <form method="POST" action="Search" >
+                <li>Search User by Surname:<input type="text" name="name"></li>
+                <input type="submit" value="Search">
             </form>           
         </h3>
         </header>

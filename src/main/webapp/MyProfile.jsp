@@ -6,7 +6,8 @@
 
 <%@page import="java.util.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ page import="uk.ac.dundee.computing.aec.instagrim.stores.*" %>
+<%@page import="uk.ac.dundee.computing.aec.instagrim.stores.*" %>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -18,35 +19,38 @@
         <header>
         
             <%
-                LoggedIn lg = (LoggedIn) session.getAttribute("LoggedIn");                               
+                LoggedIn lg = (LoggedIn) session.getAttribute("LoggedIn"); 
+                CurrentPage cp = (CurrentPage) session.getAttribute("CurrentPage");
             %>
                 
         <h1>InstaGrim !  </h1>
-        <h2><%=lg.getFirstName()%>'s world in Black and White</h2>
+        <h2><%=cp.getFirstName()%>'s world in Black and White</h2>
         
         
-        <a href="/Instagrim/Image/<%=lg.getpPicID()%>" ><img src="/Instagrim/Thumb/<%=lg.getpPicID()%>"></a><br/>
+        <a href="/Instagrim/Image/<%=cp.getpPicID()%>" ><img src="/Instagrim/Thumb/<%=cp.getpPicID()%>"></a><br/>
         
         
-        <h3>Bio: <%=lg.getBio()%></h3>
+        <h3>Bio: <%=cp.getBio()%></h3>
         </header>
-        
-        <nav>
-            <ul>
-                
-                
-                
-           
-                
-                
-                <%--<li class="nav"><a href="/Instagrim/upload.jsp">Upload a Profile Photo</a></li>--%>
-                <%--<li class="nav"><a href="/Instagrim/Images/majed">Edit Bio</a></li>--%>
-            </ul>
-        </nav>
         <footer>
             <ul>
+                
+                <%        
+                        
+                        
+                        if (lg != null) {
+                            if (lg.getUsername().equals(cp.getUsername())){
+                    %>
+
                 <li class="footer"><a href="/Instagrim/EditBio.jsp">Edit Bio</a></li>
-                <li class="footer"><a href="/Instagrim/EditPF.jsp">Edit Profile Photo</a></li>
+                <li class="footer"><a href="/Instagrim/EditPF.jsp">Edit Profile Photo</a></li>              
+                    
+                    
+                    <%}
+                        }%>          
+                
+                
+                <li class="footer"><a href="/Instagrim/Images/<%=cp.getUsername()%>">View Images</a></li>
                 <li class="footer"><a href="/Instagrim">Home</a></li>
                 
             </ul>

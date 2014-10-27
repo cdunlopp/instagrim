@@ -60,6 +60,16 @@ public class Login extends HttpServlet {
             LoggedIn lg= new LoggedIn();
             lg.setLogedin();
             lg.setUsername(username);
+            
+        java.util.LinkedList<String> up = us.getUserProfile(username);
+        String fname = us.getFirstName(username);
+        String bio = us.getBio(username);
+        java.util.UUID pPicID = us.getPic(username);
+        
+        lg.setFirstName(fname);
+        lg.setBio(bio);
+        lg.setpPicID(pPicID);
+        
             //request.setAttribute("LoggedIn", lg);
             
             session.setAttribute("LoggedIn", lg);

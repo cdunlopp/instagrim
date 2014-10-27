@@ -1,6 +1,6 @@
 <%-- 
-    Document   : EditPF
-    Created on : 25-Oct-2014, 16:42:50
+    Document   : SearchResults
+    Created on : 26-Oct-2014, 22:28:57
     Author     : Christopher
 --%>
 
@@ -18,19 +18,27 @@
         <header>
                                    
         <h1>InstaGrim !  </h1>
-            
+        <h2>Search Results:</h2>
+        <%
+            java.util.LinkedList<FoundList> fl = (java.util.LinkedList<FoundList>) request.getAttribute("results");
+            if (fl == null) {
+        %>
+        <p>No Matches found</p>
+        <%
+        } else {
+            Iterator<FoundList> iterator;
+            iterator = fl.iterator();
+            while (iterator.hasNext()) {
+                FoundList fi = (FoundList) iterator.next();
+
+        %>
+        <a href="/Instagrim/MyProfile/<%=fi.login%>" ><img src="/Instagrim/Thumb/<%=fi.picID%>"></a> <%=fi.fname%> <%=fi.sname%> (<%=fi.login%>)<br/><%
         
-        <h3>
-            <form method="POST" enctype="multipart/form-data" action="Image" >
-                
-                File to upload: <input type="file" name="upfile">
-                <input type="hidden" name="source" value="Profile"/>
-                <br/>
-                <br/>
-                <input type="submit" value="Press"> to upload the file!
-            </form>           
-        </h3>
+            }
+            }
+        %>
         </header>
+        
         <footer>
             <ul>
                 
